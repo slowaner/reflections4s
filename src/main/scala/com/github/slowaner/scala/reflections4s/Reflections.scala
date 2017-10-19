@@ -1,8 +1,4 @@
-package org.slowaner.reflections4s
-
-import org.reflections.scanners.{Scanner => JScanner}
-import org.reflections.util.{ConfigurationBuilder => JConfigurationBuilder}
-import org.reflections.{Configuration => JConfiguration, Reflections => JReflections}
+package com.github.slowaner.scala.reflections4s
 
 import java.lang.annotation.Annotation
 import java.util
@@ -11,6 +7,10 @@ import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe.TypeTag
 import scala.reflect.runtime.{universe => ru}
+
+import org.reflections.scanners.{Scanner => JScanner}
+import org.reflections.util.{ConfigurationBuilder => JConfigurationBuilder}
+import org.reflections.{Configuration => JConfiguration, Reflections => JReflections}
 
 /**
   * Created by gunman on 19.07.2017.

@@ -1,8 +1,9 @@
-package org.slowaner.reflections4s
+package com.github.slowaner.scala.reflections4s
 
 import java.time.LocalDateTime
 
-import scala.reflect.runtime.{universe => ru}
+import scala.reflect.api.{Mirror, TypeCreator, Universe}
+import scala.reflect.runtime.{currentMirror => cm, universe => ru}
 
 object ReflectionHelper {
   // Shortcuts for java classes
@@ -34,6 +35,13 @@ object ReflectionHelper {
   val JavaBooleanType: ru.Type = JavaBooleanTypeTag.tpe
   val LocalDateTimeType: ru.Type = LocalDateTimeTypeTag.tpe
 
+  def typeToTypeTag(tpe: ru.Type, mirror: Mirror[ru.type] = cm): ru.TypeTag[_] = ru.TypeTag(cm, new TypeCreator {
+    override def apply[U <: Universe with Singleton](m: Mirror[U]): U#Type = {
+      assert(m == mirror, s"TypeTag[$tpe] defined in $mirror cannot be migrated to $m.")
+      tpe.asInstanceOf[U#Type]
+    }
+  })
+
   final def castValue(value: Any, castTo: ru.Type): Any = {
     castTo match {
       case t if t =:= IntType => toInt(value)
@@ -55,12 +63,12 @@ object ReflectionHelper {
 
   private final def toOption(value: Any, optionTpe: ru.Type): Option[_] = {
     val argTpe = optionTpe match {
-      case x if x <:< ru.typeOf[Option[_]] => x.typeArgs.head
+      case x if x <:< ru.typeOf[Option[Any]] => x.typeArgs.head
       case x => x
     }
     value match {
       case None => None
-      case x: Some[_] => Some(castValue(x.get, argTpe))
+      case Some(x) => Some(castValue(x, argTpe))
       case x => Some(castValue(x, argTpe))
     }
   }

@@ -22,7 +22,8 @@ final case class ClassFactory[R](ttag: ru.TypeTag[R]) {
   val constructorSymbol: ru.Symbol = tpe.decl(ru.termNames.CONSTRUCTOR)
 
   val defaultConstructorSymbol: ru.MethodSymbol =
-    if (constructorSymbol.isMethod) constructorSymbol.asMethod else constructorSymbol.asTerm.alternatives.map {
+    if (constructorSymbol.isMethod) constructorSymbol.asMethod
+    else constructorSymbol.asTerm.alternatives.map {
       _.asMethod
     }.find {
       _.isPrimaryConstructor

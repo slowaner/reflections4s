@@ -11,12 +11,7 @@ final case class ClassFactory[R](ttag: ru.TypeTag[R]) {
   val instanceMirror: ru.InstanceMirror = mirror reflect (mirror reflectModule moduleSymbol).instance
   val instanceMirrorType: ru.Type = instanceMirror.symbol.typeSignature
   val isCaseClass: Boolean = classSymbol.isCaseClass
-
-  //  if (!classSymbol.isCaseClass)
-  //    throw new IllegalArgumentException(
-  //      "CaseClassDeserializer only applies to case classes!"
-  //    )
-
+  
   val classMirror: ru.ClassMirror = mirror.reflectClass(classSymbol)
 
   val constructorSymbol: ru.Symbol = tpe.decl(ru.termNames.CONSTRUCTOR)

@@ -13,7 +13,7 @@ import org.reflections.util.{ConfigurationBuilder => JConfigurationBuilder}
 import org.reflections.{Configuration => JConfiguration, Reflections => JReflections}
 
 /**
-  * Created by gunman on 19.07.2017.
+  * Created by slowaner on 19.07.2017.
   */
 class Reflections(configuration: JConfiguration) extends JReflections(configuration) {
   val mirror: ru.Mirror = scala.reflect.runtime.currentMirror

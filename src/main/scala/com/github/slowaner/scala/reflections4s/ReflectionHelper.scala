@@ -2,6 +2,7 @@ package com.github.slowaner.scala.reflections4s
 
 import java.time.LocalDateTime
 
+import scala.language.postfixOps
 import scala.reflect.api.{Mirror, TypeCreator, Universe}
 import scala.reflect.runtime.{currentMirror => cm, universe => ru}
 
@@ -42,23 +43,21 @@ object ReflectionHelper {
     }
   })
 
-  final def castValue(value: Any, castTo: ru.Type): Any = {
-    castTo match {
-      case t if t =:= IntType => toInt(value)
-      case t if t =:= StringType => toStr(value)
-      case t if t =:= BooleanType => toBoolean(value)
-      case t if t =:= JavaBooleanType => toJavaBoolean(value)
-      case t if t =:= IntegerType => toInteger(value)
-      case t if t =:= LocalDateTimeType => toLocalDateTime(value)
-      case t if t =:= OptionType => toOption(value, castTo)
-      case _ => value
-    }
+  final def castValue(value: Any, castTo: ru.Type): Any = castTo match {
+    case t if t =:= IntType => toInt(value)
+    case t if t =:= StringType => toStr(value)
+    case t if t =:= BooleanType => toBoolean(value)
+    case t if t =:= JavaBooleanType => toJavaBoolean(value)
+    case t if t =:= IntegerType => toInteger(value)
+    case t if t =:= LocalDateTimeType => toLocalDateTime(value)
+    case t if t =:= OptionType => toOption(value, castTo)
+    case _ => value
   }
 
-  private final def toBoolean: PartialFunction[Any, Boolean] = {
+  private final def toBoolean(o: Any): Boolean = o match {
     case x: Boolean => x
     case x: JavaBoolean => x
-    case x: String => x.toBoolean
+    case x: String => x toBoolean
   }
 
   private final def toOption(value: Any, optionTpe: ru.Type): Option[_] = {
@@ -73,35 +72,35 @@ object ReflectionHelper {
     }
   }
 
-  private final def toJavaBoolean: PartialFunction[Any, JavaBoolean] = {
+  private final def toJavaBoolean(o: Any): JavaBoolean = o match {
     case x: JavaBoolean => x
     case x: Boolean => x
-    case x: String => x.toBoolean
+    case x: String => x toBoolean
     case null => null
   }
 
-  private final def toInteger: PartialFunction[Any, JavaInteger] = {
+  private final def toInteger(o: Any): JavaInteger = o match {
     case x: JavaInteger => x
     case x: Int => x
-    case x: BigInt => x.toInt
+    case x: BigInt => x toInt
     case null => null
   }
 
-  private final def toInt: PartialFunction[Any, Int] = {
+  private final def toInt(o: Any): Int = o match {
     case x: Int => x
-    case x: JavaInteger => x.toInt
-    case x: BigInt => x.toInt
+    case x: JavaInteger => x toInt
+    case x: BigInt => x toInt
   }
 
-  private final def toStr: PartialFunction[Any, String] = {
+  private final def toStr(o: Any): String = o match {
     case x: String => x
     case null => null
-    case x => x.toString
+    case x => x toString
   }
 
-  private final def toLocalDateTime: PartialFunction[Any, LocalDateTime] = {
+  private final def toLocalDateTime(o: Any): LocalDateTime = o match {
     case x: LocalDateTime => x
-    case x: String => LocalDateTime.parse(x)
+    case x: String => LocalDateTime parse x
     case null => null
   }
 }

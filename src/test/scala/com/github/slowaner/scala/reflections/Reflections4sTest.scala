@@ -9,6 +9,11 @@ case class MockCaseClass(
   mockIntDefault: Int = 10,
   mockInt: Int
 )
+case class MockCaseClassNoDefaults(
+  mockString: String,
+  mockIntDefault: Int,
+  mockInt: Int
+)
 
 class MockCommonClass(
   val mockDoubleDefault: Double = 10.5d,
@@ -24,6 +29,26 @@ class MockCommonClass(
         mcc.mockDoubleDefault != this.mockDoubleDefault ||
           mcc.mockString != this.mockString ||
           mcc.mockInt != this.mockInt
+      ) false
+      else true
+    case _ => false
+  }
+}
+
+class MockCommonClassNoDefaults(
+  val mockDoubleDefault: Double,
+  val mockString: String,
+  val mockInt: Int
+) {
+  override def toString = s"MockCommonClassNoDefaults($mockDoubleDefault,$mockString,$mockInt)"
+
+  override def equals(obj: Any): Boolean = obj match {
+    case null => false
+    case mccnd: MockCommonClassNoDefaults =>
+      if (
+        mccnd.mockDoubleDefault != this.mockDoubleDefault ||
+          mccnd.mockString != this.mockString ||
+          mccnd.mockInt != this.mockInt
       ) false
       else true
     case _ => false
@@ -66,8 +91,22 @@ class Reflections4sTest extends FlatSpec with Matchers {
     mockInt = 55
   )
 
+  private val mockCaseNoDefault = MockCaseClassNoDefaults(
+    mockIntDefault = 333,
+    mockString = "JustString",
+    mockInt = 55
+  )
+
+  private val mockCommonNoDefault = new MockCommonClassNoDefaults(
+    mockDoubleDefault = 987.115d,
+    mockString = "JustString",
+    mockInt = 55
+  )
+
   private val mockCaseFactory = ClassFactory[MockCaseClass](ru.typeTag[MockCaseClass])
+  private val mockCaseNoDefaultsFactory = ClassFactory[MockCaseClassNoDefaults](ru.typeTag[MockCaseClassNoDefaults])
   private val mockCommonFactory = ClassFactory[MockCommonClass](ru.typeTag[MockCommonClass])
+  private val mockCommonNoDefaultsFactory = ClassFactory[MockCommonClassNoDefaults](ru.typeTag[MockCommonClassNoDefaults])
 
   "Reflections4s CaseClassFactory" should s"build $mockCaseWithDefault from $bindingsWithDefault" in {
     mockCaseFactory.buildWith(bindingsWithDefault) should be(mockCaseWithDefault)
@@ -77,11 +116,20 @@ class Reflections4sTest extends FlatSpec with Matchers {
     mockCaseFactory.buildWith(bindingsAll) should be(mockCaseAll)
   }
 
-  "Reflections4s CaseCommonFactory" should s"build $mockCommonWithDefault from $bindingsWithDefault" in {
+  it should s"build $mockCaseNoDefault from $bindingsAll" in {
+    mockCaseNoDefaultsFactory.buildWith(bindingsAll) should be(mockCaseNoDefault)
+  }
+
+  "Reflections4s CommonClassFactory" should s"build $mockCommonWithDefault from $bindingsWithDefault" in {
     mockCommonFactory.buildWith(bindingsWithDefault) should be(mockCommonWithDefault)
   }
 
   it should s"build $mockCommonAll from $bindingsAll" in {
     mockCommonFactory.buildWith(bindingsAll) should be(mockCommonAll)
   }
+
+  it should s"build $mockCommonNoDefault from $bindingsAll" in {
+    mockCommonNoDefaultsFactory.buildWith(bindingsAll) should be(mockCommonNoDefault)
+  }
+
 }

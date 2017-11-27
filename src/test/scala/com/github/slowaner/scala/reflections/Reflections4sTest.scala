@@ -1,6 +1,6 @@
 package com.github.slowaner.scala.reflections
 
-import com.github.slowaner.scala.reflections4s.ClassFactory
+import com.github.slowaner.scala.reflections4s.{ClassFactory, ReflectionHelper}
 import org.scalatest.{FlatSpec, Matchers}
 import scala.reflect.runtime.{universe => ru}
 
@@ -9,6 +9,7 @@ case class MockCaseClass(
   mockIntDefault: Int = 10,
   mockInt: Int
 )
+
 case class MockCaseClassNoDefaults(
   mockString: String,
   mockIntDefault: Int,
@@ -109,27 +110,32 @@ class Reflections4sTest extends FlatSpec with Matchers {
   private val mockCommonNoDefaultsFactory = ClassFactory[MockCommonClassNoDefaults](ru.typeTag[MockCommonClassNoDefaults])
 
   "Reflections4s CaseClassFactory" should s"build $mockCaseWithDefault from $bindingsWithDefault" in {
-    mockCaseFactory.buildWith(bindingsWithDefault) should be(mockCaseWithDefault)
+    mockCaseFactory.buildWith(bindingsWithDefault) shouldBe mockCaseWithDefault
   }
 
   it should s"build $mockCaseAll from $bindingsAll" in {
-    mockCaseFactory.buildWith(bindingsAll) should be(mockCaseAll)
+    mockCaseFactory.buildWith(bindingsAll) shouldBe mockCaseAll
   }
 
   it should s"build $mockCaseNoDefault from $bindingsAll" in {
-    mockCaseNoDefaultsFactory.buildWith(bindingsAll) should be(mockCaseNoDefault)
+    mockCaseNoDefaultsFactory.buildWith(bindingsAll) shouldBe mockCaseNoDefault
   }
 
   "Reflections4s CommonClassFactory" should s"build $mockCommonWithDefault from $bindingsWithDefault" in {
-    mockCommonFactory.buildWith(bindingsWithDefault) should be(mockCommonWithDefault)
+    mockCommonFactory.buildWith(bindingsWithDefault) shouldBe mockCommonWithDefault
   }
 
   it should s"build $mockCommonAll from $bindingsAll" in {
-    mockCommonFactory.buildWith(bindingsAll) should be(mockCommonAll)
+    mockCommonFactory.buildWith(bindingsAll) shouldBe mockCommonAll
   }
 
   it should s"build $mockCommonNoDefault from $bindingsAll" in {
-    mockCommonNoDefaultsFactory.buildWith(bindingsAll) should be(mockCommonNoDefault)
+    mockCommonNoDefaultsFactory.buildWith(bindingsAll) shouldBe mockCommonNoDefault
   }
 
+  "ReflectionHelper" should s"build correct Manifest" in {
+    val optionTtag = ru.typeTag[Option[String]]
+    val optionManifest = implicitly[Manifest[Option[String]]]
+    ReflectionHelper.manifestFor(optionTtag) shouldBe optionManifest
+  }
 }

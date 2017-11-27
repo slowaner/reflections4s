@@ -32,7 +32,7 @@ case class CaseClassFactory[T](ttag: ru.TypeTag[T]) extends ClassFactory[T] {
     val builtArgs = applyMethodParams map {
       case term if term.typeSignature <:< ru.typeOf[Option[Any]] =>
         val termName = term.name toString
-        val result = if (bindings contains termName) bindings get termName map (ReflectionHelper castValue(_, term.typeSignature))
+        val result = if (bindings contains termName) ReflectionHelper castValue(bindings(termName), term.typeSignature)
         else if (defaultApplyMethodDefaultParamValues contains termName) defaultApplyMethodDefaultParamValues(termName)()
         else None
         result

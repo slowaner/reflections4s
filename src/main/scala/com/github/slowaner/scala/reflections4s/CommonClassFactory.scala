@@ -38,8 +38,9 @@ case class CommonClassFactory[T](ttag: ru.TypeTag[T]) extends ClassFactory[T] {
     val builtArgs = defaultConstructorParams map {
       case term if term.typeSignature <:< ru.typeOf[Option[Any]] =>
         val termName = term.name toString
-        val result = if (bindings contains termName) bindings get termName map (ReflectionHelper castValue(_, term.typeSignature))
-        else defaultConstructorDefaultParamValues(termName)()
+        val result = if (bindings contains termName) ReflectionHelper castValue(bindings(termName), term.typeSignature)
+        else if (defaultConstructorDefaultParamValues contains termName) defaultConstructorDefaultParamValues(termName)()
+        else None
         result
       case term =>
         val termName = term.name toString

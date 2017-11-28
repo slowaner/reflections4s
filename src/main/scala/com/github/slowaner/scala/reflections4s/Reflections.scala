@@ -1,4 +1,5 @@
-package com.github.slowaner.scala.reflections4s
+package com.github.slowaner.scala
+package reflections4s
 
 import java.lang.annotation.Annotation
 import java.util

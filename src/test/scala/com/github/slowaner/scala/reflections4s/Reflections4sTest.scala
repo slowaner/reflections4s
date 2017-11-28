@@ -1,6 +1,6 @@
-package com.github.slowaner.scala.reflections
+package com.github.slowaner.scala
+package reflections4s
 
-import com.github.slowaner.scala.reflections4s.{ClassFactory, ReflectionHelper}
 import org.scalatest.{FlatSpec, Matchers}
 import scala.reflect.runtime.{universe => ru}
 

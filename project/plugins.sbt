@@ -1,6 +1,6 @@
 // Versions
 // SBT-Pack
-val sbtPackVersion = "0.9.3-SNAPSHOT"
+val sbtPackVersion = "0.9.7-SNAPSHOT"
 // Release plugin
 val releasePluginVersion = "1.0.6"
 

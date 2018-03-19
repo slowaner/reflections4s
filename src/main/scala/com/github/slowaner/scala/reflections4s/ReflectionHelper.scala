@@ -133,7 +133,10 @@ object ReflectionHelper {
     case tpe if tpe =:= JavaIntegerType => toInteger(value)
     case tpe if tpe =:= LocalDateTimeType => toLocalDateTime(value)
     case tpe if tpe <:< OptionType => toOption(value, tpe)
-    case x => throwTransformException(value, x)
+    case _ => value
+    //TODO Normal transformation
+    //    case tpe if classToType(value.getClass) <:< tpe => value
+    //    case x => throwTransformException(value, x)
   }
 
   private final def toByte(o: Any): Byte = o match {
